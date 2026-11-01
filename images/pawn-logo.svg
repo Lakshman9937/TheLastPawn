@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" width="60" height="72">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5D98B;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#D6A34A;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#C8912A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A0701A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="goldGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#F5D98B;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#D6A34A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A0701A;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <!-- Pawn Head (sphere) -->
+  <ellipse cx="50" cy="22" rx="16" ry="16" fill="url(#goldGrad)" filter="url(#glow)"/>
+  <!-- Highlight on head -->
+  <ellipse cx="44" cy="17" rx="5" ry="4" fill="rgba(255,255,200,0.4)"/>
+  <!-- Neck -->
+  <rect x="44" y="36" width="12" height="8" rx="3" fill="url(#goldGrad2)"/>
+  <!-- Body/torso -->
+  <ellipse cx="50" cy="58" rx="18" ry="14" fill="url(#goldGrad)" filter="url(#glow)"/>
+  <!-- Body highlight -->
+  <ellipse cx="43" cy="52" rx="6" ry="4" fill="rgba(255,255,200,0.3)"/>
+  <!-- Waist taper -->
+  <rect x="43" y="70" width="14" height="6" rx="2" fill="url(#goldGrad2)"/>
+  <!-- Base platform -->
+  <ellipse cx="50" cy="82" rx="22" ry="7" fill="url(#goldGrad)" filter="url(#glow)"/>
+  <!-- Base bottom -->
+  <ellipse cx="50" cy="86" rx="28" ry="8" fill="url(#goldGrad2)"/>
+  <!-- Base rim highlight -->
+  <ellipse cx="50" cy="84" rx="26" ry="6" fill="none" stroke="rgba(255,240,150,0.5)" stroke-width="1.5"/>
+  <!-- Ground shadow -->
+  <ellipse cx="50" cy="94" rx="30" ry="4" fill="rgba(0,0,0,0.2)"/>
+</svg>

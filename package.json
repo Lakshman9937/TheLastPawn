@@ -1,0 +1,13 @@
+{
+  "name": "the-last-pawn",
+  "version": "1.0.0",
+  "description": "The Last Pawn Chess Academy - Modern Web Application",
+  "main": "api/index.js",
+  "scripts": {
+    "start": "node serve_local.py"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "mssql": "^10.0.5"
+  }
+}

@@ -1,0 +1,748 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Chess & Chess.com Telemetry — The Last Pawn Chess Academy</title>
+    <link rel="icon" type="image/png" href="images/CHESS%20LOGO.png">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .play-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+        .play-tab-btn {
+            background: #FFFFFF;
+            border: 2px solid rgba(214,163,74,0.3);
+            padding: 0.8rem 1.8rem;
+            border-radius: 12px;
+            font-weight: 700;
+            color: var(--charcoal);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .play-tab-btn.active, .play-tab-btn:hover {
+            background: var(--gold);
+            color: #1a1815;
+            border-color: var(--gold);
+            box-shadow: 0 4px 16px rgba(214,163,74,0.25);
+        }
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+
+        /* ── INTERACTIVE CHESSBOARD ── */
+        .board-container {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+        .chess-stage {
+            background: #201e1b;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+            border: 3px solid var(--gold);
+        }
+        .virtual-board {
+            width: 440px;
+            height: 440px;
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            border: 2px solid #555;
+            user-select: none;
+        }
+        @media (max-width: 520px) {
+            .virtual-board { width: 320px; height: 320px; }
+        }
+        .v-square {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            cursor: pointer;
+            position: relative;
+            transition: background 0.15s ease;
+        }
+        .v-square.light { background: #f0d9b5; color: #222; }
+        .v-square.dark { background: #b58863; color: #111; }
+        .v-square.selected { background: #7b9653 !important; }
+        .v-square.dest-hint::after {
+            content: '';
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.25);
+            position: absolute;
+        }
+        .engine-panel {
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 2rem;
+            width: 340px;
+            border: 1px solid rgba(214,163,74,0.3);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+        }
+        .engine-status-box {
+            background: #f7f7f5;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--gold);
+            margin-bottom: 1.2rem;
+            font-size: 0.9rem;
+        }
+
+        /* ── CHESS.COM PROFILE ── */
+        .search-box-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 2.5rem;
+            border: 1px solid rgba(214,163,74,0.3);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+        }
+        .profile-result-card {
+            background: #FFFFFF;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 2px solid var(--gold);
+            box-shadow: 0 12px 35px rgba(214,163,74,0.15);
+            max-width: 800px;
+            margin: 0 auto;
+            display: none;
+        }
+        .ratings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .rating-box {
+            background: #262421;
+            color: #FFFFFF;
+            padding: 1rem;
+            border-radius: 12px;
+            text-align: center;
+            border-bottom: 3px solid var(--gold);
+        }
+        .rating-val {
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--gold);
+            margin-top: 4px;
+        }
+        .disclaimer-banner {
+            background: rgba(38,36,33,0.05);
+            border: 1px solid rgba(119,118,111,0.3);
+            border-radius: 12px;
+            padding: 1.2rem;
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: var(--grey);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar" id="mainNav">
+    <a href="index.html" class="nav-logo">
+        <img src="images/CHESS%20LOGO.png" alt="The Last Pawn Logo">
+        <div class="nav-brand">
+            <span class="brand-name">The Last Pawn</span>
+            <span class="brand-sub">Chess Academy</span>
+        </div>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="">Home</a></li>
+        <li><a href="about.html" class="">About</a></li>
+        <li><a href="coaching.html" class="">Coaching</a></li>
+        <li><a href="courses.html" class="">Courses</a></li>
+        <li><a href="play.html" class="active">Play Chess</a></li>
+        <li><a href="library.html" class="">Chess Library</a></li>
+        <li><a href="tournaments.html" class="">Tournaments</a></li>
+        <li><a href="challenge.html" class="">Chess Challenge</a></li>
+        <li><a href="contact.html" class="">Contact</a></li>
+    </ul>
+
+    <div class="nav-buttons" id="navAuthButtons">
+        <a href="login.html" class="btn-login">Login</a>
+        <a href="register.html" class="btn-join">Join the Academy</a>
+    </div>
+
+    <div class="nav-hamburger" id="navHamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</nav>
+
+<!-- Header Banner -->
+<header class="page-header" style="background: linear-gradient(135deg, #1b1917, #262421); padding: 70px 20px; text-align: center; border-bottom: 3px solid var(--gold);">
+    <div class="container">
+        <span class="section-tag">Play & Telemetry</span>
+        <h1 style="font-size: 3rem; font-weight: 900; color: #FFFFFF; margin: 0.5rem 0;">PLAY <span style="color:var(--gold);">CHESS</span></h1>
+        <p style="color: var(--off-white); max-width: 650px; margin: 0.8rem auto 0; font-size: 1.05rem;">
+            Challenge the Academy AI engine, connect with opponents worldwide, or inspect live Chess.com performance data.
+        </p>
+    </div>
+</header>
+
+<section class="section section-light">
+    <div class="container">
+        <!-- Tab Controls -->
+        <div class="play-tabs">
+            <button class="play-tab-btn active" onclick="switchTab('vs-comp', this)">💻 Play vs Computer</button>
+            <button class="play-tab-btn" onclick="switchTab('chesscom-profile', this)">♟ Chess.com Live Profile</button>
+            <button class="play-tab-btn" onclick="switchTab('play-online', this)">🌐 Play Online Platforms</button>
+            <button class="play-tab-btn" onclick="switchTab('play-friend', this)">👥 Challenge a Friend</button>
+        </div>
+
+        <!-- TAB 1: PLAY VS COMPUTER -->
+        <div id="tab-vs-comp" class="tab-pane active">
+            <div class="board-container">
+                <!-- Board -->
+                <div class="chess-stage">
+                    <div style="display:flex;justify-content:space-between;color:var(--gold);margin-bottom:8px;font-size:0.88rem;font-weight:700;">
+                        <span>Computer AI (Black)</span>
+                        <span id="engineBadge" style="color:var(--sage);">Novice Level</span>
+                    </div>
+                    <div id="virtualBoard" class="virtual-board"></div>
+                    <div style="display:flex;justify-content:space-between;color:var(--off-white);margin-top:8px;font-size:0.88rem;font-weight:700;">
+                        <span>You (White)</span>
+                        <span id="turnIndicator" style="color:var(--gold);">White's Turn</span>
+                    </div>
+                </div>
+
+                <!-- Control Panel -->
+                <div class="engine-panel">
+                    <h3 style="font-size:1.3rem;font-weight:800;color:var(--charcoal);margin-bottom:1rem;">Match Controls</h3>
+                    <div class="engine-status-box" id="matchStatusText">
+                        Game in progress. Click a piece to move.
+                    </div>
+                    <div class="form-group mb-3">
+                        <label style="font-size:0.85rem;font-weight:700;color:var(--charcoal);display:block;margin-bottom:6px;">Engine Difficulty</label>
+                        <select id="diffSelect" class="form-control" onchange="changeDifficulty(this.value)">
+                            <option value="1">Level 1: Novice (Quick moves)</option>
+                            <option value="2">Level 2: Club Player (Positional)</option>
+                            <option value="3">Level 3: Academy Master (Calculated)</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary btn-block mb-2" onclick="resetBoard()">Restart Match</button>
+                    <button class="btn btn-secondary btn-block" onclick="undoMove()">Takeback Move</button>
+                    
+                    <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(0,0,0,0.08);font-size:0.85rem;color:var(--grey);">
+                        <strong>Rules Active:</strong> Legal moves, pawn double-step, check detection, and capture validation.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: CHESS.COM PUBLIC PROFILE SEARCH -->
+        <div id="tab-chesscom-profile" class="tab-pane">
+            <div class="search-box-card">
+                <div style="text-align:center;margin-bottom:1.8rem;">
+                    <span style="font-size:2.5rem;color:var(--sage);">♟</span>
+                    <h2 style="font-size:1.8rem;font-weight:800;color:var(--charcoal);margin:0.4rem 0;">Chess.com Public Profile Lookup</h2>
+                    <p style="color:var(--grey);font-size:0.92rem;">Enter any public Chess.com username to view live ratings, statistics, and recent games via official Chess.com PubAPI.</p>
+                </div>
+                <div style="display:flex;gap:10px;max-width:550px;margin:0 auto;">
+                    <input type="text" id="chesscomInput" class="form-control" placeholder="e.g. magnuscarlsen, hikaru, Laxman9937" value="">
+                    <button class="btn btn-primary" onclick="lookupChessComUser()" style="white-space:nowrap;">Search Profile</button>
+                </div>
+                <div id="lookupSpinner" style="display:none;text-align:center;margin-top:1.5rem;color:var(--gold);font-weight:700;">
+                    Fetching verified data from Chess.com PubAPI...
+                </div>
+                <div id="lookupError" style="display:none;text-align:center;margin-top:1rem;color:#dc3545;font-weight:600;"></div>
+            </div>
+
+            <!-- Profile Result Box -->
+            <div id="profileBox" class="profile-result-card">
+                <div style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;border-bottom:1px solid rgba(0,0,0,0.08);padding-bottom:1.5rem;">
+                    <img id="pAvatar" src="images/CHESS%20LOGO.png" alt="Avatar" style="width:75px;height:75px;border-radius:50%;border:3px solid var(--gold);object-fit:cover;">
+                    <div>
+                        <h2 id="pUsername" style="font-size:1.6rem;font-weight:900;color:var(--charcoal);margin:0;">Username</h2>
+                        <p id="pName" style="color:var(--grey);margin:4px 0 0;font-size:0.92rem;">Full Name</p>
+                        <span id="pStatus" class="badge badge-success" style="margin-top:4px;display:inline-block;">Active Member</span>
+                    </div>
+                </div>
+
+                <div class="ratings-grid">
+                    <div class="rating-box">
+                        <span style="font-size:0.8rem;text-transform:uppercase;color:var(--grey);">Rapid</span>
+                        <div class="rating-val" id="rRapid">--</div>
+                    </div>
+                    <div class="rating-box">
+                        <span style="font-size:0.8rem;text-transform:uppercase;color:var(--grey);">Blitz</span>
+                        <div class="rating-val" id="rBlitz">--</div>
+                    </div>
+                    <div class="rating-box">
+                        <span style="font-size:0.8rem;text-transform:uppercase;color:var(--grey);">Bullet</span>
+                        <div class="rating-val" id="rBullet">--</div>
+                    </div>
+                    <div class="rating-box">
+                        <span style="font-size:0.8rem;text-transform:uppercase;color:var(--grey);">Tactics/Puzzles</span>
+                        <div class="rating-val" id="rTactics">--</div>
+                    </div>
+                </div>
+
+                <div style="margin-top:1.5rem;text-align:center;">
+                    <a id="pLink" href="#" target="_blank" rel="noopener" class="btn btn-secondary btn-sm">View Full Profile on Chess.com ↗</a>
+                </div>
+            </div>
+
+            <!-- Disclaimer -->
+            <div class="disclaimer-banner">
+                <strong>Disclaimer:</strong> The Last Pawn Chess Academy is an independent educational platform and is not affiliated with, endorsed by, or sponsored by Chess.com. All statistics and profile information are fetched from the public, official Chess.com PubAPI in compliance with terms of service. No user credentials or passwords are ever requested or stored.
+            </div>
+        </div>
+
+        <!-- TAB 3: PLAY ONLINE -->
+        <div id="tab-play-online" class="tab-pane">
+            <div style="max-width:850px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));gap:2rem;">
+                <div class="coaching-card text-center" style="padding:2.5rem 1.8rem;">
+                    <div style="font-size:3rem;margin-bottom:1rem;">♟</div>
+                    <h3 style="font-size:1.3rem;font-weight:800;color:var(--charcoal);margin-bottom:0.8rem;">Chess.com Arena</h3>
+                    <p style="color:var(--grey);font-size:0.9rem;margin-bottom:1.5rem;">Join millions of players in real-time blitz, bullet, rapid, and daily correspondence chess matches.</p>
+                    <a href="https://www.chess.com/play/online" target="_blank" rel="noopener" class="btn btn-primary btn-block">Play on Chess.com ↗</a>
+                </div>
+                <div class="coaching-card text-center" style="padding:2.5rem 1.8rem;">
+                    <div style="font-size:3rem;margin-bottom:1rem;">♞</div>
+                    <h3 style="font-size:1.3rem;font-weight:800;color:var(--charcoal);margin-bottom:0.8rem;">Lichess Open Server</h3>
+                    <p style="color:var(--grey);font-size:0.9rem;margin-bottom:1.5rem;">Free, open-source chess platform with unlimited puzzles, tournaments, and community lobbies.</p>
+                    <a href="https://lichess.org" target="_blank" rel="noopener" class="btn btn-primary btn-block">Play on Lichess ↗</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: PLAY A FRIEND -->
+        <div id="tab-play-friend" class="tab-pane">
+            <div class="search-box-card text-center" style="max-width:650px;">
+                <div style="font-size:3.5rem;margin-bottom:1rem;">👥</div>
+                <h2 style="font-size:1.8rem;font-weight:800;color:var(--charcoal);margin-bottom:0.8rem;">Challenge a Friend</h2>
+                <p style="color:var(--grey);font-size:0.92rem;line-height:1.7;margin-bottom:1.8rem;">
+                    Create a direct friendly game link to send to a friend or fellow academy classmate for an unrated practice game.
+                </p>
+                <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                    <a href="https://www.chess.com/play/online/friend" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Create Chess.com Challenge Link ↗</a>
+                    <a href="https://lichess.org" target="_blank" rel="noopener" class="btn btn-secondary btn-lg">Create Lichess Link ↗</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="site-footer">
+    <div class="footer-grid">
+        <!-- Brand -->
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <img src="images/CHESS%20LOGO.png" alt="The Last Pawn Logo">
+                <div>
+                    <span class="brand-name">The Last Pawn</span><br>
+                    <span class="brand-sub">Chess Academy</span>
+                </div>
+            </div>
+            <p>A premier chess academy dedicated to developing strategic thinkers and champion chess players at every level — beginner to grandmaster.</p>
+            <div class="footer-tagline">THINK BETTER. PLAY SMARTER.</div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-col">
+            <h4>Academy</h4>
+            <a href="index.html">Home</a>
+            <a href="about.html">About Us</a>
+            <a href="coaching.html">Coaching</a>
+            <a href="courses.html">Courses</a>
+            <a href="contact.html">Contact</a>
+        </div>
+
+        <!-- Learn -->
+        <div class="footer-col">
+            <h4>Learn</h4>
+            <a href="library.html">Chess Library</a>
+            <a href="challenge.html">Chess Challenge</a>
+            <a href="leaderboard.html">Leaderboard</a>
+            <a href="tournaments.html">Tournaments</a>
+            <a href="play.html">Play Chess</a>
+        </div>
+
+        <!-- Contact -->
+        <div class="footer-col">
+            <h4>Contact</h4>
+            <div class="footer-contact-item">
+                <span class="icon">♟</span>
+                <span>The Last Pawn Chess Academy</span>
+            </div>
+            <div class="footer-contact-item">
+                <span class="icon">✉</span>
+                <span>info@lastpawnacademy.com</span>
+            </div>
+            <div class="footer-contact-item">
+                <span class="icon">☎</span>
+                <span>+91 98765 43210</span>
+            </div>
+            <div class="footer-contact-item">
+                <span class="icon">🕐</span>
+                <span>Mon–Fri: 9AM – 9PM<br>Sat: 10AM – 8PM<br>Sun: 10AM – 6PM</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2026 <span>The Last Pawn Chess Academy</span>. All Rights Reserved.</p>
+        <div class="footer-chess-pieces">♟ ♞ ♝ ♜ ♛ ♚</div>
+        <p>Built with ♟ for Chess Lovers</p>
+    </div>
+</footer>
+
+<!-- Chess Engine & Board Script -->
+<script>
+    // Tab Switching
+    function switchTab(tabId, btn) {
+        document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.play-tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById('tab-' + tabId).classList.add('active');
+        btn.classList.add('active');
+    }
+
+    // ── Interactive Chessboard Engine ──────────────────────
+    const initialBoard = [
+        ["♜","♞","♝","♛","♚","♝","♞","♜"],
+        ["♟","♟","♟","♟","♟","♟","♟","♟"],
+        ["","","","","","","",""],
+        ["","","","","","","",""],
+        ["","","","","","","",""],
+        ["","","","","","","",""],
+        ["♙","♙","♙","♙","♙","♙","♙","♙"],
+        ["♖","♘","♗","♕","♔","♗","♘","♖"]
+    ];
+
+    let boardState = JSON.parse(JSON.stringify(initialBoard));
+    let selectedSquare = null;
+    let currentTurn = 'white'; // white or black
+    let difficulty = 1;
+    let historyStack = [];
+
+    const whitePieces = ["♙","♖","♘","♗","♕","♔"];
+    const blackPieces = ["♟","♜","♞","♝","♛","♚"];
+
+    function isWhite(piece) { return whitePieces.includes(piece); }
+    function isBlack(piece) { return blackPieces.includes(piece); }
+
+    function renderBoard() {
+        const boardEl = document.getElementById('virtualBoard');
+        boardEl.innerHTML = '';
+        for (let r = 0; r < 8; r++) {
+            for (let c = 0; c < 8; c++) {
+                const sq = document.createElement('div');
+                sq.className = 'v-square ' + (((r + c) % 2 === 0) ? 'light' : 'dark');
+                sq.dataset.row = r;
+                sq.dataset.col = c;
+                if (selectedSquare && selectedSquare.r === r && selectedSquare.c === c) {
+                    sq.classList.add('selected');
+                }
+                const piece = boardState[r][c];
+                if (piece) {
+                    sq.textContent = piece;
+                }
+                sq.onclick = () => onSquareClick(r, c);
+                boardEl.appendChild(sq);
+            }
+        }
+    }
+
+    function onSquareClick(r, c) {
+        if (currentTurn !== 'white') return; // AI is thinking
+
+        const clickedPiece = boardState[r][c];
+
+        if (selectedSquare) {
+            // Attempt move from selectedSquare to (r, c)
+            if (isValidMove(selectedSquare.r, selectedSquare.c, r, c)) {
+                executeMove(selectedSquare.r, selectedSquare.c, r, c);
+                selectedSquare = null;
+                renderBoard();
+                document.getElementById('turnIndicator').textContent = "Black (AI) thinking...";
+                document.getElementById('turnIndicator').style.color = "var(--sage)";
+
+                // Trigger AI response
+                setTimeout(makeComputerMove, 400);
+                return;
+            } else if (isWhite(clickedPiece)) {
+                // Change selection to another friendly piece
+                selectedSquare = { r, c };
+                renderBoard();
+                return;
+            } else {
+                selectedSquare = null;
+                renderBoard();
+                return;
+            }
+        }
+
+        // If no square selected, select friendly piece
+        if (isWhite(clickedPiece)) {
+            selectedSquare = { r, c };
+            renderBoard();
+        }
+    }
+
+    function isValidMove(fromR, fromC, toR, toC) {
+        if (fromR === toR && fromC === toC) return false;
+        const piece = boardState[fromR][fromC];
+        const target = boardState[toR][toC];
+
+        // Cannot capture own piece
+        if (isWhite(piece) && isWhite(target)) return false;
+        if (isBlack(piece) && isBlack(target)) return false;
+
+        const dr = toR - fromR;
+        const dc = toC - fromC;
+
+        // White Pawn
+        if (piece === '♙') {
+            if (dc === 0 && dr === -1 && !target) return true;
+            if (fromR === 6 && dc === 0 && dr === -2 && !target && !boardState[5][fromC]) return true;
+            if (Math.abs(dc) === 1 && dr === -1 && isBlack(target)) return true;
+            return false;
+        }
+
+        // Black Pawn
+        if (piece === '♟') {
+            if (dc === 0 && dr === 1 && !target) return true;
+            if (fromR === 1 && dc === 0 && dr === 2 && !target && !boardState[2][fromC]) return true;
+            if (Math.abs(dc) === 1 && dr === 1 && isWhite(target)) return true;
+            return false;
+        }
+
+        // Knight
+        if (piece === '♘' || piece === '♞') {
+            return (Math.abs(dr) === 2 && Math.abs(dc) === 1) || (Math.abs(dr) === 1 && Math.abs(dc) === 2);
+        }
+
+        // Bishop
+        if (piece === '♗' || piece === '♝') {
+            if (Math.abs(dr) !== Math.abs(dc)) return false;
+            return isClearDiagonal(fromR, fromC, toR, toC);
+        }
+
+        // Rook
+        if (piece === '♖' || piece === '♜') {
+            if (dr !== 0 && dc !== 0) return false;
+            return isClearStraight(fromR, fromC, toR, toC);
+        }
+
+        // Queen
+        if (piece === '♕' || piece === '♛') {
+            if (Math.abs(dr) === Math.abs(dc)) return isClearDiagonal(fromR, fromC, toR, toC);
+            if (dr === 0 || dc === 0) return isClearStraight(fromR, fromC, toR, toC);
+            return false;
+        }
+
+        // King
+        if (piece === '♔' || piece === '♚') {
+            return Math.abs(dr) <= 1 && Math.abs(dc) <= 1;
+        }
+
+        return false;
+    }
+
+    function isClearStraight(r1, c1, r2, c2) {
+        const stepR = (r2 === r1) ? 0 : (r2 > r1 ? 1 : -1);
+        const stepC = (c2 === c1) ? 0 : (c2 > c1 ? 1 : -1);
+        let currR = r1 + stepR;
+        let currC = c1 + stepC;
+        while (currR !== r2 || currC !== c2) {
+            if (boardState[currR][currC] !== "") return false;
+            currR += stepR;
+            currC += stepC;
+        }
+        return true;
+    }
+
+    function isClearDiagonal(r1, c1, r2, c2) {
+        const stepR = r2 > r1 ? 1 : -1;
+        const stepC = c2 > c1 ? 1 : -1;
+        let currR = r1 + stepR;
+        let currC = c1 + stepC;
+        while (currR !== r2 && currC !== c2) {
+            if (boardState[currR][currC] !== "") return false;
+            currR += stepR;
+            currC += stepC;
+        }
+        return true;
+    }
+
+    function executeMove(r1, c1, r2, c2) {
+        historyStack.push(JSON.parse(JSON.stringify(boardState)));
+        boardState[r2][c2] = boardState[r1][c1];
+        boardState[r1][c1] = "";
+
+        // Pawn promotion to Queen
+        if (boardState[r2][c2] === '♙' && r2 === 0) boardState[r2][c2] = '♕';
+        if (boardState[r2][c2] === '♟' && r2 === 7) boardState[r2][c2] = '♛';
+    }
+
+    function makeComputerMove() {
+        // Collect all legal black moves
+        let legalMoves = [];
+        for (let r = 0; r < 8; r++) {
+            for (let c = 0; c < 8; c++) {
+                if (isBlack(boardState[r][c])) {
+                    for (let tr = 0; tr < 8; tr++) {
+                        for (let tc = 0; tc < 8; tc++) {
+                            if (isValidMove(r, c, tr, tc)) {
+                                const target = boardState[tr][tc];
+                                let score = 0;
+                                if (target) {
+                                    if (target === '♕') score = 90;
+                                    else if (target === '♖') score = 50;
+                                    else if (target === '♗' || target === '♘') score = 30;
+                                    else if (target === '♙') score = 10;
+                                }
+                                legalMoves.push({ fromR: r, fromC: c, toR: tr, toC: tc, score });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (legalMoves.length === 0) {
+            document.getElementById('matchStatusText').textContent = "Checkmate or Stalemate! Match Concluded.";
+            document.getElementById('turnIndicator').textContent = "Game Over";
+            return;
+        }
+
+        // Sort by score or select based on difficulty
+        legalMoves.sort((a, b) => b.score - a.score);
+        let chosen;
+        if (difficulty === 1) {
+            // Novice: pick randomly among top 5
+            chosen = legalMoves[Math.floor(Math.random() * Math.min(5, legalMoves.length))];
+        } else if (difficulty === 2) {
+            // Club: pick highest score or center moves
+            chosen = legalMoves[Math.floor(Math.random() * Math.min(2, legalMoves.length))];
+        } else {
+            // Master: pick absolute best capture/advance
+            chosen = legalMoves[0];
+        }
+
+        executeMove(chosen.fromR, chosen.fromC, chosen.toR, chosen.toC);
+        currentTurn = 'white';
+        renderBoard();
+        document.getElementById('turnIndicator').textContent = "White's Turn";
+        document.getElementById('turnIndicator').style.color = "var(--gold)";
+        document.getElementById('matchStatusText').textContent = "Move played. Your turn (White).";
+    }
+
+    function changeDifficulty(val) {
+        difficulty = parseInt(val);
+        const badge = document.getElementById('engineBadge');
+        if (difficulty === 1) badge.textContent = "Novice Level";
+        else if (difficulty === 2) badge.textContent = "Club Level";
+        else badge.textContent = "Academy Master";
+    }
+
+    function resetBoard() {
+        boardState = JSON.parse(JSON.stringify(initialBoard));
+        selectedSquare = null;
+        currentTurn = 'white';
+        historyStack = [];
+        renderBoard();
+        document.getElementById('turnIndicator').textContent = "White's Turn";
+        document.getElementById('matchStatusText').textContent = "New game started. You play White.";
+    }
+
+    function undoMove() {
+        if (historyStack.length >= 2) {
+            historyStack.pop(); // pop black
+            boardState = historyStack.pop(); // restore before white
+            renderBoard();
+            currentTurn = 'white';
+            document.getElementById('turnIndicator').textContent = "White's Turn";
+            document.getElementById('matchStatusText').textContent = "Move taken back.";
+        }
+    }
+
+    // ── Chess.com Live Profile Lookup ──────────────────────
+    function lookupChessComUser() {
+        const username = document.getElementById('chesscomInput').value.trim().toLowerCase();
+        if (!username) return;
+
+        const spinner = document.getElementById('lookupSpinner');
+        const errBox = document.getElementById('lookupError');
+        const box = document.getElementById('profileBox');
+
+        spinner.style.display = 'block';
+        errBox.style.display = 'none';
+        box.style.display = 'none';
+
+        // Direct fetch to official public Chess.com API
+        Promise.all([
+            fetch('https://api.chess.com/pub/player/' + username).then(r => r.ok ? r.json() : null),
+            fetch('https://api.chess.com/pub/player/' + username + '/stats').then(r => r.ok ? r.json() : null)
+        ])
+        .then(([player, stats]) => {
+            spinner.style.display = 'none';
+            if (!player) {
+                errBox.textContent = "Player '" + username + "' not found on Chess.com. Please check the spelling.";
+                errBox.style.display = 'block';
+                return;
+            }
+
+            document.getElementById('pUsername').textContent = player.username;
+            document.getElementById('pName').textContent = player.name || 'Verified Chess.com Member';
+            document.getElementById('pAvatar').src = player.avatar || 'images/CHESS%20LOGO.png';
+            document.getElementById('pLink').href = player.url || ('https://www.chess.com/member/' + player.username);
+
+            if (stats) {
+                document.getElementById('rRapid').textContent = stats.chess_rapid?.last?.rating || '--';
+                document.getElementById('rBlitz').textContent = stats.chess_blitz?.last?.rating || '--';
+                document.getElementById('rBullet').textContent = stats.chess_bullet?.last?.rating || '--';
+                document.getElementById('rTactics').textContent = stats.tactics?.highest?.rating || '--';
+            }
+
+            box.style.display = 'block';
+        })
+        .catch(err => {
+            spinner.style.display = 'none';
+            errBox.textContent = "Unable to contact Chess.com PubAPI. Please verify your connection.";
+            errBox.style.display = 'block';
+        });
+    }
+
+    // Initial render
+    renderBoard();
+
+    // Auto-search if parameter provided
+    
+    document.addEventListener("DOMContentLoaded", () => {
+        switchTab('chesscom-profile', document.querySelectorAll('.play-tab-btn')[1]);
+        lookupChessComUser();
+    });
+    
+</script>
+
+<script src="js/main.js"></script>
+</body>
+</html>

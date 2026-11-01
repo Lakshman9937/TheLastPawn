@@ -44,6 +44,11 @@ Thumbs.db
 Desktop.ini
 .DS_Store
 
-# Scratch Scripts
+# Scratch Scripts & Local Backups
 test_*.py
 scratch/
+java-project-backup/
+
+# Node.js Dependencies
+node_modules/
+package-lock.json

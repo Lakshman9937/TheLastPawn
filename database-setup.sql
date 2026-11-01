@@ -217,8 +217,7 @@ GO
 
 -- ============================================================
 -- INSERT DEFAULT ADMIN USER
--- Password: admin123 (SHA-256 hashed)
--- SHA-256 of "admin123" = 240be518fabd2724ddb6f04eeb1da5967448d7e831186422d11efaf1673c6006
+-- Password hash placeholder (Use a strong bcrypt hash in production)
 -- ============================================================
 IF NOT EXISTS (SELECT * FROM users WHERE username = 'admin')
 BEGIN
@@ -228,11 +227,11 @@ BEGIN
         'admin',
         'admin@lastpawnacademy.com',
         '+91 98765 43210',
-        '240be518fabd2724ddb6f04eeb1da5967448d7e831186422d11efaf1673c6006',
+        'PLACEHOLDER_HASH_SET_VIA_PORTAL',
         'Expert',
         1
     );
-    PRINT 'Created default admin user. Login: admin / admin123';
+    PRINT 'Created default admin record placeholder.';
 END
 GO
 
@@ -330,5 +329,5 @@ GO
 
 PRINT '==============================================';
 PRINT 'Database setup complete for The Last Pawn Chess Academy!';
-PRINT 'Default admin login: username=admin, password=admin123';
+PRINT 'Admin user initialized. Set strong production password via the portal.';
 PRINT '==============================================';

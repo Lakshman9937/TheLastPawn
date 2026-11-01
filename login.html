@@ -1,0 +1,352 @@
+<!-- FILE: login.jsp -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — The Last Pawn Chess Academy</title>
+    <link rel="icon" type="image/png" href="images/CHESS%20LOGO.png">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        html, body {
+            height: auto !important;
+            min-height: 100%;
+        }
+        body.auth-page {
+            min-height: 100vh;
+            height: auto !important;
+            padding-top: 72px !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow-y: auto !important;
+            overflow-x: hidden;
+        }
+        .auth-wrapper {
+            flex: 1 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2.5rem 1rem 3.5rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .auth-card {
+            width: 100%;
+            max-width: 460px;
+        }
+        .remember-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .remember-row label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.88rem;
+            color: var(--grey);
+            cursor: pointer;
+            font-weight: 400;
+        }
+        .remember-row label input[type="checkbox"] {
+            accent-color: var(--gold);
+            width: 15px;
+            height: 15px;
+        }
+        .forgot-link {
+            font-size: 0.85rem;
+            color: var(--gold);
+            transition: color var(--transition);
+        }
+        .forgot-link:hover { color: var(--gold-light); text-decoration: underline; }
+        .auth-divider {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        .auth-divider span {
+            color: var(--grey);
+            font-size: 0.8rem;
+            white-space: nowrap;
+        }
+        .auth-divider::before,
+        .auth-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(119,118,111,0.35);
+        }
+        .auth-footer-text {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--grey);
+        }
+        .auth-footer-text a {
+            color: var(--gold);
+            font-weight: 600;
+            transition: color var(--transition);
+        }
+        .auth-footer-text a:hover { color: var(--gold-light); text-decoration: underline; }
+        .chess-board-strip {
+            display: flex;
+            height: 6px;
+            border-radius: 0 0 3px 3px;
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+        .chess-board-strip span {
+            flex: 1;
+        }
+        .chess-board-strip span:nth-child(odd) { background: var(--charcoal); }
+        .chess-board-strip span:nth-child(even) { background: var(--gold); }
+        .form-group label {
+            color: rgba(247,247,245,0.85);
+            font-size: 0.83rem;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+        }
+        .input-icon-wrap {
+            position: relative;
+        }
+        .input-icon-wrap .field-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--grey);
+            font-size: 1rem;
+            pointer-events: none;
+        }
+        .input-icon-wrap .form-control {
+            padding-left: 2.4rem;
+        }
+        .btn-login-full {
+            width: 100%;
+            padding: 0.85rem;
+            font-size: 0.97rem;
+            letter-spacing: 1px;
+        }
+        .auth-tagline {
+            text-align: center;
+            color: rgba(119,118,111,0.7);
+            font-size: 0.72rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body class="auth-page">
+
+    
+    <nav class="navbar" id="mainNav">
+    <a href="index.html" class="nav-logo">
+        <img src="images/CHESS%20LOGO.png" alt="The Last Pawn Logo">
+        <div class="nav-brand">
+            <span class="brand-name">The Last Pawn</span>
+            <span class="brand-sub">Chess Academy</span>
+        </div>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+        <li><a href="index.html" class="">Home</a></li>
+        <li><a href="about.html" class="">About</a></li>
+        <li><a href="coaching.html" class="">Coaching</a></li>
+        <li><a href="courses.html" class="">Courses</a></li>
+        <li><a href="play.html" class="">Play Chess</a></li>
+        <li><a href="library.html" class="">Chess Library</a></li>
+        <li><a href="tournaments.html" class="">Tournaments</a></li>
+        <li><a href="challenge.html" class="">Chess Challenge</a></li>
+        <li><a href="contact.html" class="">Contact</a></li>
+    </ul>
+
+    <div class="nav-buttons" id="navAuthButtons">
+        <a href="login.html" class="btn-login">Login</a>
+        <a href="register.html" class="btn-join">Join the Academy</a>
+    </div>
+
+    <div class="nav-hamburger" id="navHamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</nav>
+
+    <div class="auth-wrapper">
+        <div class="auth-card">
+
+            
+            <div class="auth-logo">
+                <img src="images/CHESS%20LOGO.png" alt="The Last Pawn Logo">
+                <span class="brand-name">The Last Pawn</span>
+                <span class="brand-sub">Chess Academy</span>
+            </div>
+
+            <h2>Welcome Back</h2>
+
+            
+            
+            
+                <div class="alert alert-error" role="alert">
+                    ♟ 
+                </div>
+            
+            
+                <div class="alert alert-success" role="alert">
+                    ✓ 
+                </div>
+            
+            
+                <div class="alert alert-info" role="alert">
+                    ℹ 
+                </div>
+            
+
+            
+            <form action="/api/login" id="loginForm" method="post" id="loginForm" novalidate>
+
+                <div class="form-group">
+                    <label for="username">Username or Email</label>
+                    <div class="input-icon-wrap">
+                        <span class="field-icon">♟</span>
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            class="form-control dark-input"
+                            placeholder="Enter your username or email"
+                            required
+                            autocomplete="username"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <div class="input-icon-wrap">
+                        <span class="field-icon">🔒</span>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="form-control dark-input"
+                            placeholder="Enter your password"
+                            required
+                            autocomplete="current-password"
+                        >
+                    </div>
+                </div>
+
+                <div class="remember-row">
+                    <label>
+                        <input type="checkbox" name="rememberMe" value="true">
+                        Remember me for 30 days
+                    </label>
+                    <a href="forgot-password.html" class="forgot-link">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-login-full">
+                    ♟ &nbsp; Login to Academy
+                </button>
+
+            </form>
+
+            <div class="auth-divider">
+                <span>New to The Last Pawn?</span>
+            </div>
+
+            <a href="register.html" class="btn btn-secondary w-100" style="justify-content:center;">
+                Create Your Account
+            </a>
+
+            <div class="auth-footer-text">
+                By logging in, you agree to our
+                <a href="terms.html">Terms of Service</a>
+                &amp;
+                <a href="privacy.html">Privacy Policy</a>
+            </div>
+
+            <div class="auth-tagline">Think Better · Play Smarter</div>
+
+            <div class="chess-board-strip">
+                <span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="site-footer">
+    <div class="footer-grid">
+        <!-- Brand -->
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <img src="images/CHESS%20LOGO.png" alt="The Last Pawn Logo">
+                <div>
+                    <span class="brand-name">The Last Pawn</span><br>
+                    <span class="brand-sub">Chess Academy</span>
+                </div>
+            </div>
+            <p>A premier chess academy dedicated to developing strategic thinkers and champion chess players at every level — beginner to grandmaster.</p>
+            <div class="footer-tagline">THINK BETTER. PLAY SMARTER.</div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-col">
+            <h4>Academy</h4>
+            <a href="index.html">Home</a>
+            <a href="about.html">About Us</a>
+            <a href="coaching.html">Coaching</a>
+            <a href="courses.html">Courses</a>
+            <a href="contact.html">Contact</a>
+        </div>
+
+        <!-- Learn -->
+        <div class="footer-col">
+            <h4>Learn</h4>
+            <a href="library.html">Chess Library</a>
+            <a href="challenge.html">Chess Challenge</a>
+            <a href="leaderboard.html">Leaderboard</a>
+            <a href="tournaments.html">Tournaments</a>
+            <a href="play.html">Play Chess</a>
+        </div>
+
+        <!-- Contact -->
+        <div class="footer-col">
+            <h4>Contact</h4>
+            <div class="footer-contact-item">
+                <span class="icon">♟</span>
+                <span>The Last Pawn Chess Academy</span>
+            </div>
+            <div class="footer-contact-item">
+                <span class="icon">✉</span>
+                <span>info@lastpawnacademy.com</span>
+            </div>
+            <div class="footer-contact-item">
+                <span class="icon">☎</span>
+                <span>+91 98765 43210</span>
+            </div>
+            <div class="footer-contact-item">
+                <span class="icon">🕐</span>
+                <span>Mon–Fri: 9AM – 9PM<br>Sat: 10AM – 8PM<br>Sun: 10AM – 6PM</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2026 <span>The Last Pawn Chess Academy</span>. All Rights Reserved.</p>
+        <div class="footer-chess-pieces">♟ ♞ ♝ ♜ ♛ ♚</div>
+        <p>Built with ♟ for Chess Lovers</p>
+    </div>
+</footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

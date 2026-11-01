@@ -1,0 +1,193 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Users | The Last Pawn Chess Academy</title>
+    <link rel="icon" type="image/png" href="../images/CHESS%20LOGO.png">
+    <link rel="stylesheet" href="../css/style.css">
+    <script>
+        // Client-side defense-in-depth auth guard for admin pages
+        (async function checkAdminAuth() {
+            try {
+                const res = await fetch('/api/admin', { headers: { 'Accept': 'application/json' } });
+                if (res.status === 401 || res.status === 403) {
+                    window.location.href = '/login.html?error=Admin+access+required';
+                }
+            } catch (e) {
+                // Network issue or offline
+            }
+        })();
+    </script>
+</head>
+<body class="page-offset">
+<nav class="navbar" id="mainNav">
+    <a href="../index.html" class="nav-logo">
+        <img src="../images/CHESS%20LOGO.png" alt="The Last Pawn Logo">
+        <div class="nav-brand">
+            <span class="brand-name">The Last Pawn</span>
+            <span class="brand-sub">Chess Academy</span>
+        </div>
+    </a>
+
+    <ul class="nav-links" id="navLinks">
+        <li><a href="../index.html" class="">Home</a></li>
+        <li><a href="../about.html" class="">About</a></li>
+        <li><a href="../coaching.html" class="">Coaching</a></li>
+        <li><a href="../courses.html" class="">Courses</a></li>
+        <li><a href="../play.html" class="">Play Chess</a></li>
+        <li><a href="../library.html" class="">Chess Library</a></li>
+        <li><a href="../tournaments.html" class="">Tournaments</a></li>
+        <li><a href="../challenge.html" class="">Chess Challenge</a></li>
+        <li><a href="../contact.html" class="">Contact</a></li>
+    </ul>
+
+    <div class="nav-buttons" id="navAuthButtons">
+        <a href="../login.html" class="btn-login">Login</a>
+        <a href="../register.html" class="btn-join">Join the Academy</a>
+    </div>
+
+    <div class="nav-hamburger" id="navHamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</nav>
+
+<div class="admin-layout">
+    <aside class="admin-sidebar">
+        <h3>Admin Panel</h3>
+        <a href="dashboard.html">📊 Dashboard</a>
+        <a href="courses-admin.html">📚 Courses</a>
+        <a href="puzzles-admin.html">🧩 Puzzles</a>
+        <a href="videos-admin.html">🎬 Videos</a>
+        <a href="challenges-admin.html">⚡ Challenges</a>
+        <a href="tournaments-admin.html">🏆 Tournaments</a>
+        <a href="users.html" class="active">👥 Users</a>
+        <a href="../login.html" style="color:#e74c3c;">🚪 Logout</a>
+    </aside>
+
+    <main class="admin-content">
+        <div class="admin-header-bar">
+            <div>
+                <h1 style="font-size:1.6rem;font-weight:800;color:var(--charcoal);">User Management</h1>
+                <p style="color:var(--grey);font-size:0.85rem;">View and manage registered academy members</p>
+            </div>
+        </div>
+
+        <div class="alert alert-success"></div>
+        <div class="alert alert-error"></div>
+
+        <div class="table-container">
+            <table class="chess-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Full Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Level</th>
+                        <th>Role</th>
+                        <th>Joined</th>
+                    </tr>
+                </thead>
+                <tbody>
+                
+                    <tr><td colspan="8" style="text-align:center;color:var(--grey);padding:2rem;">No users registered yet.</td></tr>
+                
+                    <tr>
+                        <td></td>
+                        <td style="font-weight:600;"></td>
+                        <td style="color:var(--gold);">@</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>
+                            
+                            <span class="badge badge-gold">Admin</span>
+                            
+                            <span class="badge badge-beginner">Member</span>
+                            
+                        </td>
+                        <td style="font-size:0.82rem;color:var(--grey);"></td>
+                    </tr>
+                
+                    <tr><td colspan="8" style="color:#e74c3c;padding:1rem;">Database error: </td></tr>
+                
+                </tbody>
+            </table>
+        </div>
+    </main>
+</div>
+
+<footer class="site-footer">
+    <div class="footer-grid">
+        <!-- Brand -->
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <img src="../images/CHESS%20LOGO.png" alt="The Last Pawn Logo">
+                <div>
+                    <span class="brand-name">The Last Pawn</span><br>
+                    <span class="brand-sub">Chess Academy</span>
+                </div>
+            </div>
+            <p>A premier chess academy dedicated to developing strategic thinkers and champion chess players at every level — beginner to grandmaster.</p>
+            <div class="footer-tagline">THINK BETTER. PLAY SMARTER.</div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="footer-col">
+            <h4>Academy</h4>
+            <a href="../index.html">Home</a>
+            <a href="../about.html">About Us</a>
+            <a href="../coaching.html">Coaching</a>
+            <a href="../courses.html">Courses</a>
+            <a href="../contact.html">Contact</a>
+        </div>
+
+        <!-- Learn -->
+        <div class="footer-col">
+            <h4>Learn</h4>
+            <a href="../library.html">Chess Library</a>
+            <a href="../challenge.html">Chess Challenge</a>
+            <a href="../leaderboard.html">Leaderboard</a>
+            <a href="../tournaments.html">Tournaments</a>
+            <a href="../play.html">Play Chess</a>
+        </div>
+
+        <!-- Contact -->
+        <div class="footer-col">
+            <h4>Contact</h4>
+            <div class="footer-contact-item">
+                <span class="icon">♟</span>
+                <span>The Last Pawn Chess Academy</span>
+            </div>
+            <div class="footer-contact-item">
+                <span class="icon">✉</span>
+                <span>info@lastpawnacademy.com</span>
+            </div>
+            <div class="footer-contact-item">
+                <span class="icon">☎</span>
+                <span>+91 98765 43210</span>
+            </div>
+            <div class="footer-contact-item">
+                <span class="icon">🕐</span>
+                <span>Mon–Fri: 9AM – 9PM<br>Sat: 10AM – 8PM<br>Sun: 10AM – 6PM</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>© 2026 <span>The Last Pawn Chess Academy</span>. All Rights Reserved.</p>
+        <div class="footer-chess-pieces">♟ ♞ ♝ ♜ ♛ ♚</div>
+        <p>Built with ♟ for Chess Lovers</p>
+    </div>
+</footer>
+<script src="../js/main.js"></script>
+</body>
+</html>
