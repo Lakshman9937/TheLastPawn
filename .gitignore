@@ -1,0 +1,49 @@
+# ============================================================
+# .gitignore — The Last Pawn Chess Academy
+# ============================================================
+
+# Compiled Java Bytecode
+*.class
+**/WEB-INF/classes/
+bin/
+build/
+target/
+out/
+
+# Archives & Deployables (WAR files should be built, not stored in VCS)
+*.war
+*.ear
+
+# Local Database Credentials & Secrets
+db.properties
+**/db.properties
+.env
+*.env.local
+*.local.properties
+
+# Server Logs & Runtime Data
+*.log
+logs/
+temp/
+tmp/
+*.tmp
+*.bak
+*.swp
+
+# IDE & Editor Cache
+.idea/
+.vscode/
+*.iml
+.project
+.classpath
+.settings/
+.metadata/
+
+# Operating System Files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Scratch Scripts
+test_*.py
+scratch/

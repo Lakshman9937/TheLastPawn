@@ -1,0 +1,14 @@
+# ============================================================
+# The Last Pawn Chess Academy — Database Configuration Template
+# ============================================================
+# Copy this file to 'src/db.properties' (or set environment variables)
+# and adjust values for your local or remote SQL Server instance.
+
+db.host=localhost
+db.port=1433
+db.name=CSE9937
+db.user=sa
+db.password=YourStrongPasswordHere
+
+# Alternatively, set system environment variables:
+# DB_HOST, DB_PORT, DB_NAME, DB_USER, DB_PASSWORD
