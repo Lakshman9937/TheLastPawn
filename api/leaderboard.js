@@ -1,5 +1,5 @@
-const { query } = require('./lib/db');
-const { sendResponse } = require('./lib/helpers');
+const { query } = require('../lib/db');
+const { sendResponse } = require('../lib/helpers');
 
 module.exports = async function handler(req, res) {
     if (req.method !== 'GET') {

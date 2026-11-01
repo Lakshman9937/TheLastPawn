@@ -1,5 +1,5 @@
-const { clearSessionCookie } = require('./lib/auth');
-const { sendResponse } = require('./lib/helpers');
+const { clearSessionCookie } = require('../lib/auth');
+const { sendResponse } = require('../lib/helpers');
 
 module.exports = async function handler(req, res) {
     clearSessionCookie(res);

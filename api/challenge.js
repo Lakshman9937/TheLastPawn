@@ -1,6 +1,6 @@
-const { query } = require('./lib/db');
-const { parseBody, sendResponse } = require('./lib/helpers');
-const { enforceCsrfProtection } = require('./lib/csrf');
+const { query } = require('../lib/db');
+const { parseBody, sendResponse } = require('../lib/helpers');
+const { enforceCsrfProtection } = require('../lib/csrf');
 
 module.exports = async function handler(req, res) {
     if (req.method === 'GET') {

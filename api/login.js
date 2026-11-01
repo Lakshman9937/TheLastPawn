@@ -1,9 +1,9 @@
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
-const { query } = require('./lib/db');
-const { parseBody, sendResponse } = require('./lib/helpers');
-const { setSessionCookie } = require('./lib/auth');
-const { enforceCsrfProtection } = require('./lib/csrf');
+const { query } = require('../lib/db');
+const { parseBody, sendResponse } = require('../lib/helpers');
+const { setSessionCookie } = require('../lib/auth');
+const { enforceCsrfProtection } = require('../lib/csrf');
 
 function sha256(text) {
     return crypto.createHash('sha256').update(text, 'utf8').digest('hex');

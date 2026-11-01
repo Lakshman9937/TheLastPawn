@@ -67,7 +67,7 @@ const server = http.createServer(async (req, res) => {
 
     // 2. Protect Admin Static Pages
     if (lowerPath.startsWith('/admin') && !lowerPath.includes('/css') && !lowerPath.includes('/images')) {
-        const { getSessionUser } = require('./api/lib/auth');
+        const { getSessionUser } = require('./lib/auth');
         const user = getSessionUser(req);
         if (!user || !user.isAdmin) {
             res.statusCode = 302;

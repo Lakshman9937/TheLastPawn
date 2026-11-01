@@ -1,7 +1,7 @@
-const { query } = require('./lib/db');
-const { parseBody, sendResponse } = require('./lib/helpers');
-const { requireAdmin } = require('./lib/auth');
-const { enforceCsrfProtection } = require('./lib/csrf');
+const { query } = require('../lib/db');
+const { parseBody, sendResponse } = require('../lib/helpers');
+const { requireAdmin } = require('../lib/auth');
+const { enforceCsrfProtection } = require('../lib/csrf');
 
 module.exports = async function handler(req, res) {
     // 1. Strict Administrator Authorization Check
